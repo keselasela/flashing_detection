@@ -1,0 +1,33 @@
+comand
+curl -X POST https://api.line.me/things/v1/trial/products \
+-H 'Authorization: Bearer eGhYEVvWeJSfBHgvN6VMf+eQZPx04cu60dbvd53qyU4ls7YBXx4rhfv4iH/Pb3mHrZAMidj/re4BZRRBNo5waFzjmXWxR5ZCnXWjumUZ6SCrpR3ey0wOTSVTRgebCpVZyhbYwMlF4Mq3KWb7EkAW3VGUYhWQfeY8sLGRXgo3xvw=' \
+-H 'Content-Type:application/json' \
+-d '{
+  "name": "name of line things",
+  "liffId": "1578204987-v6lg30aD"
+}'
+
+responce
+{"id":6538295649685495643,"name":"name of line things","type":"BLE","channelId":1578204987,"actionUri":"line://app/1578204987-v6lg30aD","serviceUuid":"dd1aee15-5660-4637-9e48-9a4471f05d86","psdiServiceUuid":"e625601e-9e55-4597-a598-76018a0d293d","psdiCharacteristicUuid":"26e2b12b-85f0-4f3f-9fdd-91d114270e6e"}⏎
+
+curl -X GET https://api.line.me/things/v1/trial/products -H 'Authorization: Bearer eGhYEVvWeJSfBHgvN6VMf+eQZPx04cu60dbvd53qyU4ls7YBXx4rhfv4iH/Pb3mHrZAMidj/re4BZRRBNo5waFzjmXWxR5ZCnXWjumUZ6SCrpR3ey0wOTSVTRgebCpVZyhbYwMlF4Mq3KWb7EkAW3VGUYhWQfeY8sLGRXgo3xvw='
+
+curl -X PUT https://api.line.me/things/v1/products/6538295649685495643/scenario-set \
+-H 'Authorization: Bearer eGhYEVvWeJSfBHgvN6VMf+eQZPx04cu60dbvd53qyU4ls7YBXx4rhfv4iH/Pb3mHrZAMidj/re4BZRRBNo5waFzjmXWxR5ZCnXWjumUZ6SCrpR3ey0wOTSVTRgebCpVZyhbYwMlF4Mq3KWb7EkAW3VGUYhWQfeY8sLGRXgo3xvw=' \
+-H 'Content-Type:application/json' \
+-d '
+{
+    "autoClose": false, 
+    "suppressionInterval": 0,  
+    "scenarios": [
+        {
+            "trigger": {
+                "type": "BLE_NOTIFICATION",
+                "serviceUuid": "f2b742dc-35e3-4e55-9def-0ce4a209c552",
+                "characteristicUuid": "a11bd5c0-e7da-4015-869b-d5c0087d3cc4"
+            },
+            "actions": [
+            ]
+        }
+    ]
+}'
