@@ -36,7 +36,7 @@ time.sleep(1)
 ret, frame = cap.read()
 
 roi = cv2.selectROI(frame, False)
-
+print(type(roi))
 ret = tracker.init(frame, roi)
 
 while True:
