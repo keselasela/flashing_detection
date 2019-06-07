@@ -15,6 +15,7 @@ sub_weight = 5
 #タイル内の描画ピクセル数で重み付け、大きなのノイズはタイルのサイズで調整
 def main():
     tile_list = make_tile_list()
+    print
     print(len(tile_list))
 
     cap = cv2.VideoCapture(0)
@@ -44,13 +45,20 @@ def main():
         #    mean_y = np.sum([temp * condition for condition in conditions])//sum_item
         #    cv2.circle(frame, (mean_y, mean_x),15, (255,0,0), 2)
         ##-----------------------------------------------------------
+        #アイデア１：トラッカーの範囲指定はしきい値より多いタイルの数により決定
+        
         frame = draw_weight(conditions, tile_list, frame)
+       
+
         weight_conditions = (weight_map[:]>254)*1
-        sum_weight = np.sum(weight_conditions)
-        masked_tile_list = tile_list*(weight_map[:]>254)
-        circle_x = np.sum(masked_tile_list[:,0:3, 2]/2)//sum_weight
-        circle_y = np.sum(masked_tile_list[:,1:4, 2]/2)//sum_weight
-        cv2.circle(frame, (circle_x, circle_y),15, (255,0,0), 2)
+        if np.sum(weight_conditions) > 0:
+            sum_weight = np.sum(weight_conditions)
+            masked_tile_list = [[tile_list[i][j]*weight_conditions[i] for j in range(0,4)] for i in range(0,len(tile_list))]
+
+            circle_x = np.sum(np.array(masked_tile_list)[:,0:3:2]//2)//sum_weight
+            circle_y = np.sum(np.array(masked_tile_list)[:,1:4:2]//2)//sum_weight
+            cv2.circle(frame, (circle_x, circle_y),15, (255,0,0), 2)
+        
 
         cv2.imshow('frame', frame)
         cv2.imshow('diff_frame',diff_frame)
@@ -81,7 +89,7 @@ def make_tile_list():
 
 def draw_weight(conditions, tile_list, frame):
     global weight_map
-    
+    weight_map -= sub_weight
     for i in range(tile_num_x*tile_num_y):
         
         
@@ -91,13 +99,7 @@ def draw_weight(conditions, tile_list, frame):
         elif weight_map[i]<0 :
             weight_map[i] = 0
         cv2.rectangle(weight_img, (tile_list[i][0],tile_list[i][1]), (tile_list[i][2],tile_list[i][3]), weight_map[i], thickness=-1)
-        #-----------------------------------------------
-        #if i%tile_num_x==tile_num_x-1:
-        #    print(weight_map[i])
-        #else:
-        #    print("{},".format(weight_map[i]),end="")
-
-    weight_map -= sub_weight
+        
     return frame
     
 if __name__ == "__main__":

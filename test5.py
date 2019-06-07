@@ -52,26 +52,7 @@ def main():
         #    cv2.circle(frame, (mean_y, mean_x),15, (255,0,0), 2)
         ##---------------------------------------------------ri--------
         frame = draw_weight(conditions, tile_list, frame)
-        print(flag)
-        if flag:
-            
-            ret = tracker.init(frame, roi)
-            
-            flag = False
-        print(roi)
-        if roi:
-            success, roi = tracker.update(frame)
-            
-            print("success")            
-            (x,y,w,h) = tuple(map(int,roi))
-
-            if success:
-                p1 = (x, y)
-                p2 = (x+w, y+h)
-                cv2.rectangle(frame, p1, p2, (0,255,0), 3)
-            else :
-                cv2.putText(frame, "Tracking failed!!", (500,400), cv2.FONT_HERSHEY_SIMPLEX, 1,(0,0,255),3)
-
+       
         cv2.imshow('frame', frame)
         cv2.imshow('diff_frame',diff_frame)
         cv2.imshow('weight_map',weight_img)
@@ -81,8 +62,37 @@ def main():
         k = cv2.waitKey(5) & 0xFF
         if k == 27:
             break
-    
+        if flag:
+            ret = tracker.init(frame, roi)
+            break
+    #トラック開始--------------------------------
+    while True:
+
+        ret, frame = cap.read()
+
+        success, roi = tracker.update(frame)
+
+        (x,y,w,h) = tuple(map(int,roi))
+
+        if success:
+            p1 = (x, y)
+            p2 = (x+w, y+h)
+            cv2.rectangle(frame, p1, p2, (0,255,0), 3)
+        else :
+            cv2.putText(frame, "Tracking failed!!", (500,400), cv2.FONT_HERSHEY_SIMPLEX, 1,(0,0,255),3)
+
+        # 実行しているトラッカー名を画面に表示
+        cv2.putText(frame, tracker_name, (20,600), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0),3)
+
+        cv2.imshow(tracker_name, frame)
+
+        k = cv2.waitKey(1) & 0xff
+        if k == 27 :
+            break
+
+    cap.release()
     cv2.destroyAllWindows()
+    
 
 
 def make_tile_list():
